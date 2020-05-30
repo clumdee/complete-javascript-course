@@ -1,49 +1,20 @@
 /*
-GAME RULES:
+YOUR 3 CHALLENGES
+Change the game to follow these rules:
 
-- The game has 2 players, playing in rounds
-- In each turn, a player rolls a dice as many times as he whishes. Each result get added to his ROUND score
-- BUT, if the player rolls a 1, all his ROUND score gets lost. After that, it's the next player's turn
-- The player can choose to 'Hold', which means that his ROUND score gets added to his GLBAL score. After that, it's the next player's turn
-- The first player to reach 100 points on GLOBAL score wins the game
-
+1. A player looses his ENTIRE score when he rolls two 6 in a row. After that, it's the next player's turn. (Hint: Always save the previous dice roll in a separate variable)
+2. Add an input field to the HTML where players can set the winning score, so that they can change the predefined score of 100. (Hint: you can read that value with the .value property in JavaScript. This is a good oportunity to use google to figure this out :)
+3. Add another dice to the game, so that there are two dices now. The player looses his current score when one of them is a 1. (Hint: you will need CSS to position the second dice, so take a look at the CSS code for the first one.)
 */
-
-// var scores       = [0, 0]
-// var roundScore   = 0
-// var activePlayer = 0
-
-// get dice value from 1 to 6
-// var dice         = 1 + Math.floor(Math.random() * 6)
-
-// document.querySelector('#current-' + activePlayer).textContent = dice
-// document.querySelector('#current-' + activePlayer).innerHTML = '<em>' + dice + '</em>'
-
-// test accessing html content
-// var x = document.querySelector('#current-' + activePlayer).textContent
-// console.log(x)
-// console.log(typeof x)
-
-// test click event callback -- using declarative function, expressive functions, and anonymous function
-// function f() {console.log('declaration function clicked')}
-// document.querySelector('.btn-hold').addEventListener('click', f)
-// var f2 = function() {console.log('expression function clicked')}
-// document.querySelector('.btn-roll').addEventListener('click', f2)
-// document.querySelector('.btn-new').addEventListener('click', function() {console.log('anonymous function clicked')}) 
-
-// set scores and current scores to 0 for both players
-// document.getElementById('score-0').textContent = 0
-// document.getElementById('score-1').textContent = 0
-// document.getElementById('current-0').textContent = 0
-// document.getElementById('current-1').textContent = 0
-
-// modify style/css property -- get object by class, access style (css), select property, then assign value 
-// document.querySelector('.dice').style.display = 'none'
 
 // init parameters
 var scores, roundScore, activePlayer
 // init game state
 var isPlaying
+// add memory parameter
+var lastDice
+// add finalScore parameter
+var finalScore
 
 // init stage
 init()
@@ -60,8 +31,15 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
         diceDOM.style.display = 'block'
         diceDOM.src = 'dice-' + dice + '.png'
 
+        // reset score and switch player if roll two 6s in a row
+        if (dice === 6 && lastDice === 6) {
+            // assign roundScore to cancel the current score
+            roundScore = -scores[activePlayer]
+            // update score, check for winner, and switch active player
+            updateScoreAndCheckWinnerAndSwitch()
+        }
         // update roundScore of the active player if the roll is not 1
-        if (dice !== 1) {
+        else if (dice !== 1) {
             // update roundScore and display
             roundScore = roundScore + dice 
             document.querySelector('#current-' + activePlayer).textContent = roundScore
@@ -69,6 +47,9 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
             // update score, check for winner, and switch active player
             updateScoreAndCheckWinnerAndSwitch()
         }
+
+        // update lastDice
+        lastDice = dice        
     }
 })
 
@@ -90,7 +71,7 @@ function updateScoreAndCheckWinnerAndSwitch() {
     roundScore = 0
     
     // check winner 
-    if (scores[activePlayer] >= 100) {
+    if (scores[activePlayer] >= finalScore) {
         document.getElementById('name-' + activePlayer).textContent = 'Winner!'
         document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner')
         document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active')
@@ -117,6 +98,11 @@ function init() {
     roundScore   = 0
     activePlayer = 0
     isPlaying    = true
+    // set finalScore
+    // set to 100 if the Number(input value) is not > 0 ()
+    finalScore = document.querySelector('.final-score').value
+    Number(finalScore) > 0 ? {} : finalScore = 100
+    document.querySelector('.final-score').value = finalScore
 
     // set scores and current scores to 0 for both players
     document.getElementById('score-0').textContent = 0
