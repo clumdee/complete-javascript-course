@@ -462,11 +462,11 @@ c) correct answer (I would use a number for this)
 
         var answer = prompt('Please select the correct answer.');
 
-        if(answer !== 'exit') {
-            questions[n].checkAnswer(parseInt(answer), keepScore);
+        // if(answer !== 'exit') {
+        //     questions[n].checkAnswer(parseInt(answer), keepScore);
             
-            nextQuestion();
-        }
+        //     nextQuestion();
+        // }
     }
     
     nextQuestion();
